@@ -1,0 +1,134 @@
+<!--
+ * @Author: Xiaofei Wu
+ * @Date: 2024-02-06 16:50:07
+ * @LastEditTime: 2024-02-18 15:12:29
+ * @LastEditors: Xiaofei Wu
+ * @Description: 
+ * @FilePath: \尾刀计算器\index.html
+ * 
+-->
+<!--
+ * @Author: Xiaofei Wu
+ * @Date: 2024-02-06 16:55:53
+ * @LastEditTime: 2024-02-07 16:52:20
+ * @LastEditors: Xiaofei Wu
+ * @Description: 
+ * @FilePath: \尾刀计算器\index.html
+ * 
+-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+
+<body>
+    <div id="app">
+        <el-row type="flex" justify="center" align="middle" style="padding-bottom: 10px;">
+            <el-col :span="11">
+                <el-row>
+                    <el-col :span="6">
+                        <el-input v-model="currentScene.condition.health" placeholder="请输入当前血量"
+                            style="width: 100%"></el-input>
+                    </el-col>
+                    <el-col :span="6" :offset="12">
+                        <el-button type="primary" style="float: right;" @click="addSkill">新增</el-button>
+                    </el-col>
+                </el-row>
+            </el-col>
+            <el-col :span="2" style="text-align: center;"><el-button type="primary" @click="startCalc">></el-button></el-col>
+            <el-col :span="11"><el-progress :text-inside="true" :stroke-width="26" :percentage="percentage"></el-progress></el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="11">
+                <!-- <el-row style="padding-bottom: 10px">
+                    <el-col :span="6">
+                        <el-input v-model="currentScene.condition.health" placeholder="请输入当前血量"
+                            style="width: 100%"></el-input>
+                    </el-col>
+                    <el-col :span="6" :offset="12">
+                        <el-button type="primary" style="float: right;" @click="addSkill">新增</el-button>
+                    </el-col>
+                </el-row> -->
+                <el-row>
+                    <el-table :data="currentScene.skillList" border style="width: 100%">
+                        <el-table-column type="selection"></el-table-column>
+                        <el-table-column prop="name" label="技能名称"></el-table-column>
+                        <el-table-column prop="damage" label="技能伤害"></el-table-column>
+                        <el-table-column prop="type" label="技能类型">
+                            <template slot-scope="scope">
+                                {{skillTypes[scope.row.type]}}
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="操作">
+                            <template slot-scope="scope">
+                                <el-button @click="viewSkill(scope.row)" type="text" size="small">查看</el-button>
+                                <el-button @click="editSkill(scope.row)" type="text" size="small">编辑</el-button>
+                                <el-button @click="delSkill(scope.row,scope.$index)" type="text" size="small">删除</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-row>
+            </el-col>
+            <el-col :span="11" :offset="2">
+                <el-row>
+                    <el-table :data="currentScene.results" border style="width: 100%" :loading="calcing">
+                        <el-table-column prop="health" label="剩余血量"></el-table-column>
+                        <el-table-column label="操作">
+                            <template slot-scope="scope">
+                                <el-button @click="viewResult(scope.row)" type="text" size="small">查看</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-row>
+            </el-col>
+        </el-row>
+        <el-dialog :visible.sync="dialogVisible">
+            <el-form ref="form" :rules="rules" :model="formData" label-width="180px" :disabled="formDisabled">
+                <el-form-item label="技能名称" prop="name">
+                    <el-input v-model="formData.name" maxlength="10" show-word-limit></el-input>
+                </el-form-item>
+                <el-form-item label="技能伤害" prop="damage">
+                    <el-input v-model="formData.damage"></el-input>
+                </el-form-item>
+                <el-form-item label="技能类型" prop="type">
+                    <el-select v-model="formData.type" placeholder="请选择">
+                        <el-option v-for="(item,index) in skillTypes" :key="index" :label="item" :value="index"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="技能可用次数" prop="count">
+                    <el-input v-model="formData.count"></el-input>
+                </el-form-item>
+                <el-form-item label="技能最大可用次数" prop="maxCount">
+                    <el-input v-model="formData.maxCount"></el-input>
+                </el-form-item>
+                <el-form-item label="技能总计可用次数" prop="maxTotalCount">
+                    <el-input v-model="formData.maxTotalCount"></el-input>
+                </el-form-item>
+                <el-form-item label="前置技能">
+                    <el-select v-model="formData.preSkills" multiple placeholder="请选择">
+                        <el-option v-for="item in currentScene.skillList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="互斥技能">
+                    <el-select v-model="formData.mutualExclusionSkills" multiple placeholder="请选择">
+                        <el-option v-for="item in currentScene.skillList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="submitForm">确定</el-button>
+            </span>
+        </el-dialog>
+    </div>
+</body>
+<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="./main.js"></script>
+<script src="./index.js"></script>
+
+</html>
