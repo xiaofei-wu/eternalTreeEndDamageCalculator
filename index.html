@@ -1,7 +1,7 @@
 <!--
  * @Author: Xiaofei Wu
  * @Date: 2024-02-06 16:50:07
- * @LastEditTime: 2024-02-19 11:48:14
+ * @LastEditTime: 2024-02-19 18:51:35
  * @LastEditors: Xiaofei Wu
  * @Description: 
  * @FilePath: \尾刀计算器\index.html
@@ -90,7 +90,7 @@
         <el-dialog :visible.sync="dialogVisible">
             <el-form ref="form" :rules="rules" :model="formData" label-width="180px" :disabled="formDisabled">
                 <el-form-item label="技能名称" prop="name">
-                    <el-input v-model="formData.name" maxlength="10" show-word-limit></el-input>
+                    <el-input v-model="formData.name" maxlength="20" show-word-limit></el-input>
                 </el-form-item>
                 <el-form-item label="技能伤害" prop="damage">
                     <el-input v-model="formData.damage" type="number"></el-input>

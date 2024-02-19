@@ -1,7 +1,7 @@
 /*
  * @Author: Xiaofei Wu
  * @Date: 2024-02-07 16:52:49
- * @LastEditTime: 2024-02-19 18:33:42
+ * @LastEditTime: 2024-02-19 18:50:11
  * @LastEditors: Xiaofei Wu
  * @Description:
  * @FilePath: \尾刀计算器\index.js
@@ -12,7 +12,7 @@ var app = new Vue({
     el: '#app',
     data: () => {
         return {
-            skillTypes: ["调律", "共鸣", "虚数体", "自动炮（调律）", "自动炮（共鸣）"],
+            skillTypes: ["调律爆裂","调律", "共鸣", "虚数体", "自动炮（调律）", "自动炮（共鸣）"],
             scenes: [],
             currentScene: {
                 skillList: [],

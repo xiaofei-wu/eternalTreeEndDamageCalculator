@@ -1,7 +1,7 @@
 /*
  * @Author: Xiaofei Wu
  * @Date: 2024-02-06 17:00:50
- * @LastEditTime: 2024-02-19 13:57:20
+ * @LastEditTime: 2024-02-19 18:52:10
  * @LastEditors: Xiaofei Wu
  * @Description: 
  * @FilePath: \尾刀计算器\main.js
@@ -17,16 +17,16 @@
  * 
  */
 class skill{
-    constructor(name="",damage=0,type=null){
-        this.id=(new Date().getTime())//时间戳ID
-        this.name=""//技能名称
+    constructor(){
+        this.id=new Date().getTime()//时间戳ID
+        this.name=new Date().getTime()//技能名称
         this.damage=0//技能伤害
-        this.type=null//技能类型，1调律，2共鸣，3虚数体，4自动炮
+        this.type=2//技能类型，0调律爆裂，1调律，2共鸣，3虚数体，4自动炮（调律），5自动炮（共鸣），
         this.count=1//初始可用次数
         this.maxCount=1//运算中的最大可用次数（如雷主，古雷亚需要填写2）
         this.maxTotalCount=99//最大总可用次数
         this.preSkills=[]//前置技能
-        // this.mutualExclusionSkills=[]//互斥技能（列表中技能使用后，该技能永久无法使用）
+        this.mutualExclusionSkills=[]//互斥技能（列表中技能使用后，该技能永久无法使用）
         this.countFix=[]//*使用后为指定技能增加可用次数（特殊角色需自行换算）
         this.state=true//*技能可用状态标识（没想好怎么用）
         this.approximate=false//*是否为约值（目前计划一个情景内仅可在最后引入一个约值）
@@ -89,7 +89,7 @@ class calc{
         //技能伤害过高
         if((situation.health)-Number(skill.damage)<1) return false;
         //互斥技能
-        // if(skill.mutualExclusionSkills.some((mutualExclusionSkill) => situation.currentPath.findIndex(e => e.id==mutualExclusionSkill)>-1)) return false;
+        if(skill.mutualExclusionSkills.some((mutualExclusionSkill) => situation.currentPath.findIndex(e => e.id==mutualExclusionSkill)>-1)) return false;
         //前置技能
         if(!skill.preSkills.every((preSkill) => situation.currentPath.findIndex(e => e.id==preSkill)>-1)) return false;
         //尝试扣除重复情景//不计算当前排序在上次使用的技能前的技能
