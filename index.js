@@ -1,4 +1,13 @@
-var work
+/*
+ * @Author: Xiaofei Wu
+ * @Date: 2024-02-07 16:52:49
+ * @LastEditTime: 2024-02-19 18:33:42
+ * @LastEditors: Xiaofei Wu
+ * @Description:
+ * @FilePath: \尾刀计算器\index.js
+ * 
+ */
+var work = new Worker("./worker.js")
 var app = new Vue({
     el: '#app',
     data: () => {
@@ -33,6 +42,23 @@ var app = new Vue({
         }
     },
     methods: {
+        importSkills(){
+            navigator.clipboard.readText()
+                .then(text => {
+                    let data=JSON.parse(text)
+                    if(!data.skillList||!data.condition){
+                        console.error('无法获取或解析剪切板内容');
+                        return;
+                    }
+                    this.currentScene={...this.currentScene,...data}
+                })
+                .catch(err => {
+                    console.error('无法获取或解析剪切板内容:', err);
+                });
+        },
+        exportSkills(){
+            navigator.clipboard.writeText(JSON.stringify({skillList:this.currentScene.skillList,condition:this.currentScene.condition}))
+        },
         viewSkill(row) {
             this.formData = row
             this.formDisabled = true
@@ -68,7 +94,6 @@ var app = new Vue({
         },
         startCalc() {
             window.localStorage.setItem('skillList', JSON.stringify(this.currentScene.skillList));
-            work = new Worker("./worker.js")
             work.postMessage({ method: "startCalc", data: this.currentScene })
             work.onmessage = (e) => {
                 let data = e.data
@@ -83,11 +108,6 @@ var app = new Vue({
                         console.log();
                 }
             }
-            return
-            let calc123 = new calc(this.currentScene.skillList, this.currentScene.condition.health)
-            this.calcing = true
-            calc123.calcTree((percentage) => { this.percentage = percentage })
-            this.currentScene.results = calc123.getResult()
         },
         percentageUpdate(percentage){
             this.percentage = Number(percentage)
