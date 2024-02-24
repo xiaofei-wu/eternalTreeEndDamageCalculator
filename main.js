@@ -94,7 +94,7 @@ class calc{
             })
             //无子情景则为最终态，需归档
             if(subSituationCount==0) this.resultDeal(situation);
-            callback(((index+1)*100/situations.length).toFixed(0))
+            if(callback) callback(((index+1)*100/situations.length).toFixed(0));
         })
         return this.calcSubTree(newSituations,callback)
     }

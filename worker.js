@@ -11,6 +11,7 @@ onmessage = (e) => {
 }
 function startCalc(currentScene){
     let calc123=new calc(currentScene.skillList,currentScene.condition.health,currentScene.condition.targetHealth)
-    calc123.calcTree((percentage)=>{postMessage({method:"percentageUpdate",data:{percentage}})})
+    // calc123.calcTree((percentage)=>{postMessage({method:"percentageUpdate",data:{percentage}})})
+    calc123.calcTree()
     postMessage({method:"calcComplete",data:calc123.getResult()})
 }

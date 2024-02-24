@@ -1,7 +1,7 @@
 /*
  * @Author: Xiaofei Wu
  * @Date: 2024-02-07 16:52:49
- * @LastEditTime: 2024-02-24 20:07:55
+ * @LastEditTime: 2024-02-24 23:18:15
  * @LastEditors: Xiaofei Wu
  * @Description:
  * @FilePath: \尾刀计算器\index.js
@@ -120,6 +120,7 @@ var app = new Vue({
             window.localStorage.setItem('skillList', JSON.stringify(this.currentScene.skillList));
             window.localStorage.setItem('condition', JSON.stringify(this.currentScene.condition));
             work.postMessage({ method: "startCalc", data: this.currentScene })
+            this.calcing=false
             work.onmessage = (e) => {
                 let data = e.data
                 switch (data.method) {
@@ -128,6 +129,7 @@ var app = new Vue({
                         break;
                     case 'calcComplete':
                         this.currentScene.results = data.data
+                        this.calcing=true
                         break;
                     default:
                         console.log();
