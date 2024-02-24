@@ -1,7 +1,7 @@
 /*
  * @Author: Xiaofei Wu
  * @Date: 2024-02-06 17:00:50
- * @LastEditTime: 2024-02-24 16:54:42
+ * @LastEditTime: 2024-02-24 17:14:26
  * @LastEditors: Xiaofei Wu
  * @Description: 
  * @FilePath: \尾刀计算器\main.js
@@ -83,8 +83,9 @@ class calc{
                 lastSkillIndex=situation.skillList.findIndex((e)=>{return e.id==situation.currentPath[situation.currentPath.length-1].id})
             }
             situation.skillList.forEach((skill,index)=>{
+                if(skill.type==4||skill.type==5) return;
                 //不计算当前排序在上次使用的技能前的技能
-                if(lastSkillIndex>index&&(!lastSkill||lastSkill.type!=0)) return;
+                if(lastSkillIndex>index&&(!lastSkill||(lastSkill.type!=0&&lastSkill.type!=4&&lastSkill.type!=5))&&skill.type!=0) return;
                 //判断技能是否可以使用
                 if(!this.canIuse(situation,skill,index)) return;
                 //使用技能并更新状态
