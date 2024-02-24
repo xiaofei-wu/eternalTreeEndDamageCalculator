@@ -1,7 +1,7 @@
 /*
  * @Author: Xiaofei Wu
  * @Date: 2024-02-07 16:52:49
- * @LastEditTime: 2024-02-19 18:50:11
+ * @LastEditTime: 2024-02-24 16:42:26
  * @LastEditors: Xiaofei Wu
  * @Description:
  * @FilePath: \尾刀计算器\index.js
@@ -18,6 +18,8 @@ var app = new Vue({
                 skillList: [],
                 condition: {
                     health: 0,
+                    targetHealth:1,
+                    burstStatus:false,
                 },
                 results: [],
             },
@@ -26,19 +28,27 @@ var app = new Vue({
             rules: {
                 name: [{ required: true, message: '请输入技能名称', trigger: 'blur' }],
                 damage: [{ required: true, message: '请输入技能伤害', trigger: 'blur' }],
+                damageAfterBurst: [{ required: true, message: '请输入调律爆裂后技能伤害', trigger: 'blur' }],
                 type: [{ required: true, message: '请选择技能类型', trigger: 'blur' }],
                 count: [{ required: true, message: '请输入', trigger: 'blur' }],
                 maxCount: [{ required: true, message: '请输入', trigger: 'blur' }],
-                maxTotalCount: [{ required: true, message: '请输入', trigger: 'blur' }]
+                maxTotalCount: [{ required: true, message: '请输入', trigger: 'blur' }],
+                autoDamageCount: [{ required: true, message: '请输入', trigger: 'blur' }],
+                autoDamageTriggerCount: [{ required: true, message: '请输入', trigger: 'blur' }],
             },
             formDisabled: true,
             calcing: true,
             percentage: 0,
+            resultDialog:false,
+            currentPath:[],
         }
     },
     mounted() {
         if (window.localStorage.getItem('skillList')) {
             this.currentScene.skillList = JSON.parse(window.localStorage.getItem('skillList'))
+        }
+        if (window.localStorage.getItem('condition')) {
+            this.currentScene.condition = JSON.parse(window.localStorage.getItem('condition'))
         }
     },
     methods: {
@@ -94,6 +104,7 @@ var app = new Vue({
         },
         startCalc() {
             window.localStorage.setItem('skillList', JSON.stringify(this.currentScene.skillList));
+            window.localStorage.setItem('condition', JSON.stringify(this.currentScene.condition));
             work.postMessage({ method: "startCalc", data: this.currentScene })
             work.onmessage = (e) => {
                 let data = e.data
@@ -112,8 +123,9 @@ var app = new Vue({
         percentageUpdate(percentage){
             this.percentage = Number(percentage)
         },
-        viewResult() {
-
+        viewResult(singleResult) {
+            this.currentPath=singleResult.currentPath
+            this.resultDialog=true
         }
     },
 })
