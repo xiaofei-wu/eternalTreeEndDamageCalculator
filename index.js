@@ -1,7 +1,7 @@
 /*
  * @Author: Xiaofei Wu
  * @Date: 2024-02-07 16:52:49
- * @LastEditTime: 2024-02-24 16:42:26
+ * @LastEditTime: 2024-02-24 20:07:55
  * @LastEditors: Xiaofei Wu
  * @Description:
  * @FilePath: \尾刀计算器\index.js
@@ -43,6 +43,8 @@ var app = new Vue({
             currentPath:[],
         }
     },
+    computed:{
+    },
     mounted() {
         if (window.localStorage.getItem('skillList')) {
             this.currentScene.skillList = JSON.parse(window.localStorage.getItem('skillList'))
@@ -52,6 +54,16 @@ var app = new Vue({
         }
     },
     methods: {
+        format(val){
+            return val.toString().replace(/\B(?=(\d{3})+$)/g,',')
+        },
+        numberFormat (row, column, cellValue) {
+            cellValue += ''
+            if (!cellValue.includes('.')) cellValue += '.'
+            return cellValue.replace(/(\d)(?=(\d{3})+\.)/g, function ($0, $1) {
+              return $1 + ','
+            }).replace(/\.$/, '')
+        },
         importSkills(){
             navigator.clipboard.readText()
                 .then(text => {
@@ -75,7 +87,7 @@ var app = new Vue({
             this.dialogVisible = true
         },
         editSkill(row) {
-            this.formData = row
+            this.formData = JSON.parse(JSON.stringify(row))
             this.formDisabled = false
             this.dialogVisible = true
         },
@@ -92,7 +104,9 @@ var app = new Vue({
                 if (valid) {
                     let index = this.currentScene.skillList.findIndex(item => { return item.id == this.formData.id })
                     if (index != -1) {
+                        console.log(JSON.stringify(this.formData))
                         this.currentScene.skillList[index] = this.formData
+                        console.log(JSON.stringify(this.currentScene.skillList))
                     } else {
                         this.currentScene.skillList.push(this.formData)
                     }
