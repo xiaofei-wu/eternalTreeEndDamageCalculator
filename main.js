@@ -137,7 +137,7 @@ class calc{
                 autoSkill.autoDamageCount++
                 if(Number(autoSkill.autoDamageCount)>=Number(autoSkill.autoDamageTriggerCount)){
                     //触发自动炮
-                    autoSkill.autoDamageTriggerCount=0;
+                    autoSkill.autoDamageCount=0;
                     if(newSituation.burstStatus){
                         newSituation.health-=autoSkill.damageAfterBurst
                     }else{
@@ -152,7 +152,7 @@ class calc{
                 autoSkill.autoDamageCount++
                 if(Number(autoSkill.autoDamageCount)>=Number(autoSkill.autoDamageTriggerCount)){
                     //触发自动炮
-                    autoSkill.autoDamageTriggerCount=0;
+                    autoSkill.autoDamageCount=0;
                     if(newSituation.burstStatus){
                         newSituation.health-=autoSkill.damageAfterBurst
                     }else{
