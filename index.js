@@ -1,12 +1,4 @@
-/*
- * @Author: Xiaofei Wu
- * @Date: 2024-02-07 16:52:49
- * @LastEditTime: 2024-02-24 23:18:15
- * @LastEditors: Xiaofei Wu
- * @Description:
- * @FilePath: \尾刀计算器\index.js
- * 
- */
+
 var work = new Worker("./worker.js")
 var app = new Vue({
     el: '#app',

@@ -1,30 +1,4 @@
-/*
- * @Author: Xiaofei Wu
- * @Date: 2024-02-06 17:00:50
- * @LastEditTime: 2024-02-24 17:15:38
- * @LastEditors: Xiaofei Wu
- * @Description: 
- * @FilePath: \尾刀计算器\main.js
- * 
- */
-/*
- * @Author: Xiaofei Wu
- * @Date: 2024-02-06 17:00:50
- * @LastEditTime: 2024-02-24 16:22:38
- * @LastEditors: Xiaofei Wu
- * @Description: 
- * @FilePath: \尾刀计算器\main.js
- * 
- */
-/*
- * @Author: Xiaofei Wu
- * @Date: 2024-02-06 17:00:50
- * @LastEditTime: 2024-02-18 16:09:19
- * @LastEditors: Xiaofei Wu
- * @Description: 
- * @FilePath: \尾刀计算器\main.js
- * 
- */
+
 class skill{
     constructor(){
         this.id=new Date().getTime()//时间戳ID
