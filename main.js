@@ -105,8 +105,8 @@ class calc{
         //调律爆裂
         if(skill.type==0){newSituation.burstStatus=true}
         //记录使用
-        //newSituation.currentPath.push({id:skill.id,name:skill.name,damage:newSituation.burstStatus?skill.damageAfterBurst:skill.damage,type:skill.type,remainHealth:newSituation.health})
-        newSituation.currentPath.push({id:skill.id,name:skill.name,type:skill.type})
+        newSituation.currentPath.push({id:skill.id,name:skill.name,damage:newSituation.burstStatus?skill.damageAfterBurst:skill.damage,type:skill.type,remainHealth:newSituation.health})
+        //newSituation.currentPath.push({id:skill.id,name:skill.name,type:skill.type})
         //使用自动炮*需考虑自动炮伤害超标,0调律爆裂，1调律，2共鸣，3虚数体，4自动炮（调律），5自动炮（共鸣）
         if(skill.type==1){
             newSituation.skillList.filter(autoSkill=>{ return autoSkill.type==4}).forEach(autoSkill=>{
@@ -121,7 +121,7 @@ class calc{
                     }
                     //newSituation.currentPath.push({id:autoSkill.id,name:autoSkill.name,damage:newSituation.burstStatus?autoSkill.damageAfterBurst:autoSkill.damage,type:autoSkill.type,remainHealth:newSituation.health})
                     //不记录自动炮仅改写血量
-                    //newSituation.currentPath[newSituation.currentPath.length-1].remainHealth=newSituation.health
+                    newSituation.currentPath[newSituation.currentPath.length-1].remainHealth=newSituation.health
                 }
             })
         }
@@ -138,7 +138,7 @@ class calc{
                     }
                     //newSituation.currentPath.push({id:autoSkill.id,name:autoSkill.name,damage:newSituation.burstStatus?autoSkill.damageAfterBurst:autoSkill.damage,type:autoSkill.type,remainHealth:newSituation.health})
                     //不记录自动炮仅改写血量
-                    //newSituation.currentPath[newSituation.currentPath.length-1].remainHealth=newSituation.health
+                    newSituation.currentPath[newSituation.currentPath.length-1].remainHealth=newSituation.health
                 }
             })
         }
