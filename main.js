@@ -118,7 +118,9 @@ class calc{
                     }else{
                         newSituation.health-=autoSkill.damage
                     }
-                    newSituation.currentPath.push({id:autoSkill.id,name:autoSkill.name,damage:newSituation.burstStatus?autoSkill.damageAfterBurst:autoSkill.damage,type:autoSkill.type,remainHealth:newSituation.health})
+                    //newSituation.currentPath.push({id:autoSkill.id,name:autoSkill.name,damage:newSituation.burstStatus?autoSkill.damageAfterBurst:autoSkill.damage,type:autoSkill.type,remainHealth:newSituation.health})
+                    //不记录自动炮仅改写血量
+                    newSituation.currentPath[newSituation.currentPath.length-1][remainHealth]=newSituation.health
                 }
             })
         }
@@ -133,7 +135,9 @@ class calc{
                     }else{
                         newSituation.health-=autoSkill.damage
                     }
-                    newSituation.currentPath.push({id:autoSkill.id,name:autoSkill.name,damage:newSituation.burstStatus?autoSkill.damageAfterBurst:autoSkill.damage,type:autoSkill.type,remainHealth:newSituation.health})
+                    //newSituation.currentPath.push({id:autoSkill.id,name:autoSkill.name,damage:newSituation.burstStatus?autoSkill.damageAfterBurst:autoSkill.damage,type:autoSkill.type,remainHealth:newSituation.health})
+                    //不记录自动炮仅改写血量
+                    newSituation.currentPath[newSituation.currentPath.length-1][remainHealth]=newSituation.health
                 }
             })
         }
