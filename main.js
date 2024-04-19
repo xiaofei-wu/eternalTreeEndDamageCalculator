@@ -5,7 +5,7 @@ class skill{
         this.name=new Date().getTime()//技能名称
         this.damage=0//技能伤害
         this.damageAfterBurst=0//调律爆裂后伤害
-        this.type=2//技能类型，0调律爆裂，1调律，2共鸣，3虚数体，4自动炮（调律），5自动炮（共鸣），
+        this.type=2//技能类型，0调律爆裂，1调律，2共鸣，3虚数体，4自动炮（调律），5自动炮（共鸣）
         this.count=1//初始可用次数
         this.maxCount=1//运算中的最大可用次数（如雷主，古雷亚需要填写2）
         this.maxTotalCount=99//最大总可用次数
@@ -53,8 +53,9 @@ class calc{
         situations.forEach((situation,index)=>{
             let subSituationCount=0,lastSkillIndex=-1,lastSkill=null
             if(situation.currentPath.length>0){
-                lastSkill=situation.currentPath[situation.currentPath.length-1]
-                lastSkillIndex=situation.skillList.findIndex((e)=>{return e.id==situation.currentPath[situation.currentPath.length-1].id})
+                let newPath=situation.currentPath.filter((item)=>{return item.type!=4&&item.type!=5})
+                lastSkill=newPath[newPath.length-1]
+                lastSkillIndex=situation.skillList.findIndex((e)=>{return e.id==lastSkill.id})
             }
             situation.skillList.forEach((skill,index)=>{
                 if(skill.type==4||skill.type==5) return;
