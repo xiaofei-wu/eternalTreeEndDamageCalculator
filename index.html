@@ -136,6 +136,7 @@
             <el-table :data="currentPath" :key="Math.random()" border style="width: 100%">
                 <el-table-column prop="name" label="技能名称"></el-table-column>
                 <el-table-column prop="damage" :formatter="numberFormat" label="技能伤害"></el-table-column>
+                <el-table-column prop="autoDamage" :formatter="numberFormat" label="自动炮伤害"></el-table-column>
                 <el-table-column prop="type" label="技能类型">
                     <template slot-scope="scope">
                         {{skillTypes[scope.row.type]}}
