@@ -57,10 +57,7 @@ var app = new Vue({
             }).replace(/\.$/, '')
         },
         skillNameFormat (row, column, cellValue){
-            console.log(row)
-            console.log(cellValue)
-            console.log(this.currentScene.skillList)
-            console.log(this.currentScene.skillList.find(item=>{return item.id==cellValue}))
+            // console.log(row)
             return this.currentScene.skillList.find(item=>{return item.id==cellValue}).name
         },
         importSkills(){
