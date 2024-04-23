@@ -29,7 +29,7 @@ var app = new Vue({
                 autoDamageTriggerCount: [{ required: true, message: '请输入', trigger: 'blur' }],
             },
             formDisabled: true,
-            calcing: true,
+            calcing: false,
             percentage: 0,
             resultDialog:false,
             currentPath:[],
@@ -58,7 +58,8 @@ var app = new Vue({
         },
         skillNameFormat (row, column, cellValue){
             // console.log(row)
-            return this.currentScene.skillList.find(item=>{return item.id==cellValue}).name
+            let skill=this.currentScene.skillList.find(item=>{return item.id==cellValue})
+            return skill?skill.name:""
         },
         importSkills(){
             navigator.clipboard.readText()
@@ -116,7 +117,7 @@ var app = new Vue({
             window.localStorage.setItem('skillList', JSON.stringify(this.currentScene.skillList));
             window.localStorage.setItem('condition', JSON.stringify(this.currentScene.condition));
             work.postMessage({ method: "startCalc", data: this.currentScene })
-            this.calcing=false
+            this.calcing=true
             work.onmessage = (e) => {
                 let data = e.data
                 switch (data.method) {
@@ -125,7 +126,7 @@ var app = new Vue({
                         break;
                     case 'calcComplete':
                         this.currentScene.results = data.data
-                        this.calcing=true
+                        this.calcing=false
                         break;
                     default:
                         console.log();

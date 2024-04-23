@@ -65,7 +65,7 @@
             </el-col>
             <el-col :span="11" :offset="2">
                 <el-row>
-                    <el-table :data="currentScene.results" border style="width: 100%" :loading="calcing">
+                    <el-table :data="currentScene.results" border style="width: 100%" v-loading="calcing">
                         <el-table-column prop="health" :formatter="numberFormat" label="剩余血量"></el-table-column>
                         <el-table-column prop="healthGap" label="据目标值">
                             <template slot-scope="scope">
