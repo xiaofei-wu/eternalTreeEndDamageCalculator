@@ -53,11 +53,13 @@ class calc{
         situations.forEach((situation,index)=>{
             let subSituationCount=0,lastSkillIndex=-1,lastSkill=null
             if(situation.currentPath.length>0){
+                //排除自动炮
                 let newPath=situation.currentPath.filter((item)=>{return item.type!=4&&item.type!=5})
                 lastSkill=newPath[newPath.length-1]
                 lastSkillIndex=situation.skillList.findIndex((e)=>{return e.id==lastSkill.id})
             }
             situation.skillList.forEach((skill,index)=>{
+                //排除自动炮
                 if(skill.type==4||skill.type==5) return;
                 //不计算当前排序在上次使用的技能前的技能
                 if(lastSkillIndex>index&&(!lastSkill||(lastSkill.type!=0&&lastSkill.type!=4&&lastSkill.type!=5))&&skill.type!=0) return;
@@ -105,7 +107,8 @@ class calc{
         //调律爆裂
         if(skill.type==0){newSituation.burstStatus=true}
         //记录使用
-        newSituation.currentPath.push({id:skill.id,name:skill.name,damage:newSituation.burstStatus?skill.damageAfterBurst:skill.damage,autoDamage:0,type:skill.type,remainHealth:newSituation.health})
+        // newSituation.currentPath.push({id:skill.id,name:skill.name,damage:newSituation.burstStatus?skill.damageAfterBurst:skill.damage,autoDamage:0,type:skill.type,remainHealth:newSituation.health})
+        newSituation.currentPath.push({id:skill.id,damage:newSituation.burstStatus?skill.damageAfterBurst:skill.damage,autoSkillIds:[],autoDamage:0,type:skill.type,remainHealth:newSituation.health})
         //newSituation.currentPath.push({id:skill.id,name:skill.name,type:skill.type})
         //使用自动炮*需考虑自动炮伤害超标,0调律爆裂，1调律，2共鸣，3虚数体，4自动炮（调律），5自动炮（共鸣）
         if(skill.type==1){
@@ -122,7 +125,7 @@ class calc{
                     //newSituation.currentPath.push({id:autoSkill.id,name:autoSkill.name,damage:newSituation.burstStatus?autoSkill.damageAfterBurst:autoSkill.damage,type:autoSkill.type,remainHealth:newSituation.health})
                     //不记录自动炮仅改写血量
                     newSituation.currentPath[newSituation.currentPath.length-1].remainHealth=newSituation.health
-                    newSituation.currentPath[newSituation.currentPath.length-1].name=newSituation.currentPath[newSituation.currentPath.length-1].name+`(${autoSkill.name})`
+                    newSituation.currentPath[newSituation.currentPath.length-1].autoSkillIds=newSituation.currentPath[newSituation.currentPath.length-1].id
                     newSituation.currentPath[newSituation.currentPath.length-1].autoDamage=newSituation.currentPath[newSituation.currentPath.length-1].autoDamage+newSituation.burstStatus?autoSkill.damageAfterBurst:autoSkill.damage
                 }
             })
@@ -141,7 +144,7 @@ class calc{
                     //newSituation.currentPath.push({id:autoSkill.id,name:autoSkill.name,damage:newSituation.burstStatus?autoSkill.damageAfterBurst:autoSkill.damage,type:autoSkill.type,remainHealth:newSituation.health})
                     //不记录自动炮仅改写血量
                     newSituation.currentPath[newSituation.currentPath.length-1].remainHealth=newSituation.health
-                    newSituation.currentPath[newSituation.currentPath.length-1].name=newSituation.currentPath[newSituation.currentPath.length-1].name+`(${autoSkill.name})`
+                    newSituation.currentPath[newSituation.currentPath.length-1].autoSkillIds=newSituation.currentPath[newSituation.currentPath.length-1].id
                     newSituation.currentPath[newSituation.currentPath.length-1].autoDamage=newSituation.currentPath[newSituation.currentPath.length-1].autoDamage+newSituation.burstStatus?autoSkill.damageAfterBurst:autoSkill.damage
                 }
             })
