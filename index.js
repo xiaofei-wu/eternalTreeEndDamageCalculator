@@ -31,9 +31,12 @@ var app = new Vue({
             formDisabled: true,
             calcing: false,
             percentage: 0,
+            count:{calcing:0,complete:0,total:0},
             resultDialog:false,
             currentPath:[],
             workers:[],
+            startTime:null,
+            endTime:null,
         }
     },
     computed:{
@@ -47,6 +50,9 @@ var app = new Vue({
         }
     },
     methods: {
+        percentageFormat(val){
+            return `${this.count.complete}/${this.count.total}`
+        },
         format(val){
             return val.toString().replace(/\B(?=(\d{3})+$)/g,',')
         },
@@ -118,15 +124,18 @@ var app = new Vue({
             window.localStorage.setItem('skillList', JSON.stringify(this.currentScene.skillList));
             window.localStorage.setItem('condition', JSON.stringify(this.currentScene.condition));
             work.postMessage({ method: "startCalc", data: this.currentScene })
+            this.startTime=new Date().getTime()
             this.calcing=true
             work.onmessage = (e) => {
                 let data = e.data
                 switch (data.method) {
                     case 'percentageUpdate':
-                        this.percentageUpdate(data.data.percentage)
+                        this.percentageUpdate(data.data)
                         break;
                     case 'calcComplete':
                         this.currentScene.results = data.data
+                        this.endTime=new Date().getTime()
+                        console.log(`耗时：${(this.endTime-this.startTime)/1000}s`)
                         this.calcing=false
                         break;
                     default:
@@ -134,8 +143,9 @@ var app = new Vue({
                 }
             }
         },
-        percentageUpdate(percentage){
-            this.percentage = Number(percentage)
+        percentageUpdate(count){
+            // this.percentage = Number((Number(count.complete)/Number(count.total)*100).toFixed(2))
+            this.count=count
         },
         viewResult(singleResult) {
             this.currentPath=singleResult.currentPath

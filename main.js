@@ -29,8 +29,10 @@ class calc{
     }
     //技能数据解耦
     initSkill(){
-        return this.skillList.map((item)=>{
-            return JSON.parse(JSON.stringify(item))
+        return this.skillList.map((item,index)=>{
+            let skill=JSON.parse(JSON.stringify(item))
+            skill.arrayIndex=index
+            return skill
         })
     }
     //初始化
@@ -54,15 +56,16 @@ class calc{
             let subSituationCount=0,lastSkillIndex=-1,lastSkill=null
             if(situation.currentPath.length>0){
                 //排除自动炮
-                let newPath=situation.currentPath.filter((item)=>{return item.type!=4&&item.type!=5})
-                lastSkill=newPath[newPath.length-1]
-                lastSkillIndex=situation.skillList.findIndex((e)=>{return e.id==lastSkill.id})
+                // let newPath=situation.currentPath.filter((item)=>{return item.type!=4&&item.type!=5})
+                // lastSkill=newPath[newPath.length-1]
+                // lastSkillIndex=situation.skillList.findIndex((e)=>{return e.id==lastSkill.id})
+                [lastSkill]=situation.currentPath.slice(-1)
             }
             situation.skillList.forEach((skill,index)=>{
                 //排除自动炮
                 if(skill.type==4||skill.type==5) return;
                 //不计算当前排序在上次使用的技能前的技能
-                if(lastSkillIndex>index&&(!lastSkill||(lastSkill.type!=0&&lastSkill.type!=4&&lastSkill.type!=5))&&skill.type!=0) return;
+                if(lastSkill&&lastSkill.arrayIndex>index&&(!lastSkill||(lastSkill.type!=0&&lastSkill.type!=4&&lastSkill.type!=5))&&skill.type!=0) return;
                 //判断技能是否可以使用
                 if(!this.canIuse(situation,skill,index)) return;
                 //使用技能并更新状态
@@ -114,7 +117,7 @@ class calc{
         if(skill.type==0){newSituation.burstStatus=true}
         //记录使用
         // newSituation.currentPath.push({id:skill.id,name:skill.name,damage:newSituation.burstStatus?skill.damageAfterBurst:skill.damage,autoDamage:0,type:skill.type,remainHealth:newSituation.health})
-        newSituation.currentPath.push({id:skill.id,damage:newSituation.burstStatus?skill.damageAfterBurst:skill.damage,autoSkillIds:[],autoDamage:0,type:skill.type,remainHealth:newSituation.health})
+        newSituation.currentPath.push({arrayIndex:skill.arrayIndex,id:skill.id,damage:newSituation.burstStatus?skill.damageAfterBurst:skill.damage,autoSkillIds:[],autoDamage:0,type:skill.type,remainHealth:newSituation.health})
         //newSituation.currentPath.push({id:skill.id,name:skill.name,type:skill.type})
         //使用自动炮*需考虑自动炮伤害超标,0调律爆裂，1调律，2共鸣，3虚数体，4自动炮（调律），5自动炮（共鸣）
         if(skill.type==1){
