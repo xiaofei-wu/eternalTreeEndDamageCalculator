@@ -23,7 +23,7 @@
                     </el-col>
                 </el-row>
             </el-col>
-            <el-col :span="2" style="text-align: center;"><el-button type="primary" @click="startCalc">></el-button></el-col>
+            <el-col :span="2" style="text-align: center;"><el-button type="primary" @click="startCalc" :disabled="calcing">></el-button></el-col>
             <el-col :span="11"><el-progress :text-inside="true" :stroke-width="26" :percentage="percentage"></el-progress></el-col>
         </el-row>
         <el-row>

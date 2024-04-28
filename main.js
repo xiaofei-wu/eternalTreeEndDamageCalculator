@@ -34,7 +34,7 @@ class calc{
         })
     }
     //初始化
-    calcTree(callback){
+    calcTree(){
         let situations=[]
         situations.push({
             skillList:this.initSkill(),
@@ -43,11 +43,11 @@ class calc{
             burstStatus:this.burstStatus,
             currentPath:[]
         })
-        this.calcSubTree(situations,callback)
+        return situations
     }
     //递归
     calcSubTree(situations,callback){
-        console.log(situations.length)
+        // console.log(situations.length)
         if(situations.length==0) return true;
         let newSituations=[]
         situations.forEach((situation,index)=>{
@@ -67,11 +67,17 @@ class calc{
                 if(!this.canIuse(situation,skill,index)) return;
                 //使用技能并更新状态
                 newSituations.push(this.useSkill(situation,skill))
+                if(callback){
+                    if(newSituations.length>=1000){
+                        callback(newSituations)
+                        newSituations=[]
+                    }
+                }
                 subSituationCount++
             })
             //无子情景则为最终态，需归档
             if(subSituationCount==0) this.resultDeal(situation);
-            if(callback) callback(((index+1)*100/situations.length).toFixed(0));
+            // if(callback) callback(((index+1)*100/situations.length).toFixed(0));
         })
         return this.calcSubTree(newSituations,callback)
     }
@@ -160,7 +166,7 @@ class calc{
         this.result=this.result.slice(0,100)
     }
     getResult(){
-        console.log(this.result)
+        // console.log(this.result)
         return this.result
     }
 }

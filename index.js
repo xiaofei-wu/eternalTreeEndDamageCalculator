@@ -33,6 +33,7 @@ var app = new Vue({
             percentage: 0,
             resultDialog:false,
             currentPath:[],
+            workers:[],
         }
     },
     computed:{
