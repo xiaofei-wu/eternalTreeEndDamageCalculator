@@ -38,22 +38,26 @@
                     </el-col>
                 </el-row> -->
                 <el-row>
-                    <el-table :data="currentScene.skillList" :key="Math.random()" border style="width: 100%">
-                        <el-table-column type="selection"></el-table-column>
-                        <el-table-column prop="name" label="技能名称"></el-table-column>
-                        <el-table-column prop="damage" :formatter="numberFormat" label="技能伤害"></el-table-column>
-                        <el-table-column prop="damageAfterBurst" :formatter="numberFormat" label="调律爆率后伤害"></el-table-column>
-                        <el-table-column prop="damageDap" label="伤害差值">
+                    <el-table :data="currentScene.skillList" :key="Math.random()" border style="width: 100%" height="90vh">
+                        <el-table-column type="selection" width="40"></el-table-column>
+                        <el-table-column prop="name" label="技能名称" width="120">
+                            <template slot-scope="scope">
+                                <span :style="{color:scope.row.color}">{{scope.row.name}}</span>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="damage" :formatter="numberFormat" label="技能伤害" width="120"></el-table-column>
+                        <el-table-column prop="damageAfterBurst" :formatter="numberFormat" label="调律爆率后伤害" width="120"></el-table-column>
+                        <el-table-column prop="damageDap" label="伤害差值" width="120">
                             <template slot-scope="scope">
                                 {{format(scope.row.damageAfterBurst-scope.row.damage)}}
                             </template>
                         </el-table-column>
-                        <el-table-column prop="type" label="技能类型">
+                        <el-table-column prop="type" label="技能类型" width="120">
                             <template slot-scope="scope">
                                 {{skillTypes[scope.row.type]}}
                             </template>
                         </el-table-column>
-                        <el-table-column label="操作">
+                        <el-table-column label="操作" fixed="right" width="160">
                             <template slot-scope="scope">
                                 <el-button @click="viewSkill(scope.row)" type="text" size="small">查看</el-button>
                                 <el-button @click="editSkill(scope.row)" type="text" size="small">编辑</el-button>
@@ -65,14 +69,14 @@
             </el-col>
             <el-col :span="11" :offset="2">
                 <el-row>
-                    <el-table :data="currentScene.results" border style="width: 100%" v-loading="calcing">
+                    <el-table :data="currentScene.results" border style="width: 100%" v-loading="calcing" height="90vh">
                         <el-table-column prop="health" :formatter="numberFormat" label="剩余血量"></el-table-column>
                         <el-table-column prop="healthGap" label="据目标值">
                             <template slot-scope="scope">
                                 {{format(scope.row.health-scope.row.targetHealth)}}
                             </template>
                         </el-table-column>
-                        <el-table-column label="操作">
+                        <el-table-column label="操作"  fixed="right" width="120">
                             <template slot-scope="scope">
                                 <el-button @click="viewResult(scope.row)" type="text" size="small">查看</el-button>
                             </template>
@@ -96,6 +100,9 @@
                     <el-select v-model="formData.type" placeholder="请选择">
                         <el-option v-for="(item,index) in skillTypes" :key="index" :label="item" :value="index"></el-option>
                     </el-select>
+                </el-form-item>
+                <el-form-item label="标记" prop="color">
+                    <el-color-picker v-model="formData.color" show-alpha :predefine="predefineColors"></el-color-picker>
                 </el-form-item>
                 <template v-if="formData.type<4">
                     <el-form-item label="技能可用次数" prop="count">
@@ -134,7 +141,11 @@
         </el-dialog>
         <el-dialog :visible.sync="resultDialog">
             <el-table :data="currentPath" :key="Math.random()" border style="width: 100%">
-                <el-table-column prop="id" label="技能名称" :formatter="skillNameFormat"></el-table-column>
+                <el-table-column prop="id" label="技能名称">
+                    <template slot-scope="scope">
+                        <span :style="{color:skillColorFormat(scope.row.id)}">{{skillNameFormat(scope.row.id)}}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="damage" :formatter="numberFormat" label="技能伤害"></el-table-column>
                 <el-table-column prop="autoDamage" :formatter="numberFormat" label="自动炮伤害"></el-table-column>
                 <el-table-column prop="type" label="技能类型">

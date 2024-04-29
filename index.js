@@ -17,6 +17,7 @@ var app = new Vue({
             },
             dialogVisible: false,
             formData: {},
+            predefineColors:["#000000","#FF0000","#00FF00","#0000FF"],
             rules: {
                 name: [{ required: true, message: '请输入技能名称', trigger: 'blur' }],
                 damage: [{ required: true, message: '请输入技能伤害', trigger: 'blur' }],
@@ -43,7 +44,10 @@ var app = new Vue({
     },
     mounted() {
         if (window.localStorage.getItem('skillList')) {
-            this.currentScene.skillList = JSON.parse(window.localStorage.getItem('skillList'))
+            this.currentScene.skillList = JSON.parse(window.localStorage.getItem('skillList')).map(newSkill => {
+                let formatSkill=new skill()
+                return {...formatSkill,...newSkill}
+            });
         }
         if (window.localStorage.getItem('condition')) {
             this.currentScene.condition = JSON.parse(window.localStorage.getItem('condition'))
@@ -63,10 +67,15 @@ var app = new Vue({
               return $1 + ','
             }).replace(/\.$/, '')
         },
-        skillNameFormat (row, column, cellValue){
+        skillNameFormat (val){
             // console.log(row)
-            let skill=this.currentScene.skillList.find(item=>{return item.id==cellValue})
+            let skill=this.currentScene.skillList.find(item=>{return item.id==val})
             return skill?skill.name:""
+        },
+        skillColorFormat (val){
+            // console.log(row)
+            let skill=this.currentScene.skillList.find(item=>{return item.id==val})
+            return skill?skill.color:""
         },
         importSkills(){
             navigator.clipboard.readText()
@@ -76,6 +85,10 @@ var app = new Vue({
                         console.error('无法获取或解析剪切板内容');
                         return;
                     }
+                    data.skillList=data.skillList.map(newSkill => {
+                        let formatSkill=new skill()
+                        return {...formatSkill,...newSkill}
+                    });
                     this.currentScene={...this.currentScene,...data}
                 })
                 .catch(err => {
@@ -108,9 +121,7 @@ var app = new Vue({
                 if (valid) {
                     let index = this.currentScene.skillList.findIndex(item => { return item.id == this.formData.id })
                     if (index != -1) {
-                        console.log(JSON.stringify(this.formData))
                         this.currentScene.skillList[index] = this.formData
-                        console.log(JSON.stringify(this.currentScene.skillList))
                     } else {
                         this.currentScene.skillList.push(this.formData)
                     }

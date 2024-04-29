@@ -16,6 +16,7 @@ class skill{
         this.countFix=[]//*使用后为指定技能增加可用次数（特殊角色需自行换算）
         this.state=true//*技能可用状态标识（没想好怎么用）
         this.approximate=false//*是否为约值（目前计划一个情景内仅可在最后引入一个约值）
+        this.color="#000000"//默认颜色
     }
 }
 class calc{
