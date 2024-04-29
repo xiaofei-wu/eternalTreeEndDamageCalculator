@@ -38,6 +38,8 @@ var app = new Vue({
             workers:[],
             startTime:null,
             endTime:null,
+            multipleSelection:[],
+            warningLock:false,
         }
     },
     computed:{
@@ -55,7 +57,7 @@ var app = new Vue({
     },
     methods: {
         percentageFormat(val){
-            return `${this.count.complete}/${this.count.total}`
+            return `${this.count.complete}/${this.count.total}\t剩余：${this.count.total-this.count.complete}`
         },
         format(val){
             return val.toString().replace(/\B(?=(\d{3})+$)/g,',')
@@ -77,12 +79,18 @@ var app = new Vue({
             let skill=this.currentScene.skillList.find(item=>{return item.id==val})
             return skill?skill.color:""
         },
+        handleSelectionChange(val) {
+            this.multipleSelection = val;
+        },
         importSkills(){
             navigator.clipboard.readText()
                 .then(text => {
                     let data=JSON.parse(text)
                     if(!data.skillList||!data.condition){
-                        console.error('无法获取或解析剪切板内容');
+                        this.$message({
+                            message: '无法获取或解析剪切板内容',
+                            type: 'error'
+                        });
                         return;
                     }
                     data.skillList=data.skillList.map(newSkill => {
@@ -90,13 +98,33 @@ var app = new Vue({
                         return {...formatSkill,...newSkill}
                     });
                     this.currentScene={...this.currentScene,...data}
+                    this.$message({
+                        message: '导入成功',
+                        type: 'success'
+                    });
                 })
                 .catch(err => {
+                    this.$message({
+                        message: '无法获取或解析剪切板内容',
+                        type: 'error'
+                    });
                     console.error('无法获取或解析剪切板内容:', err);
                 });
         },
         exportSkills(){
             navigator.clipboard.writeText(JSON.stringify({skillList:this.currentScene.skillList,condition:this.currentScene.condition}))
+                .then(() => {
+                    this.$message({
+                        message: '已导出至剪切板',
+                        type: 'success'
+                    });
+                })
+                .catch(() => {
+                    this.$message({
+                        message: '导出失败',
+                        type: 'error'
+                    });
+                });
         },
         viewSkill(row) {
             this.formData = row
@@ -134,7 +162,14 @@ var app = new Vue({
         startCalc() {
             window.localStorage.setItem('skillList', JSON.stringify(this.currentScene.skillList));
             window.localStorage.setItem('condition', JSON.stringify(this.currentScene.condition));
-            work.postMessage({ method: "startCalc", data: this.currentScene })
+            let calcSkillList=this.currentScene.skillList.filter(singleSkill=>{
+                return this.multipleSelection.findIndex(item=>item.id==singleSkill.id)>-1
+            })
+            if(calcSkillList.length>0){
+                work.postMessage({ method: "startCalc", data: {...this.currentScene,skillList:calcSkillList} })
+            }else{
+                work.postMessage({ method: "startCalc", data: this.currentScene })
+            }
             this.startTime=new Date().getTime()
             this.calcing=true
             work.onmessage = (e) => {
@@ -150,13 +185,21 @@ var app = new Vue({
                         this.calcing=false
                         break;
                     default:
-                        console.log();
+                        console.log(e);
                 }
             }
         },
         percentageUpdate(count){
             // this.percentage = Number((Number(count.complete)/Number(count.total)*100).toFixed(2))
             this.count=count
+            if(this.count.total-this.count.complete>20&&!this.warningLock){
+                this.$message({
+                    message: '当前计算复杂度较高，可能耗费较多时间，请耐心等待或简化计算条件',
+                    type: 'warning'
+                });
+                this.warningLock=true
+                setTimeout(()=>{this.warningLock=false},10000)
+            }
         },
         viewResult(singleResult) {
             this.currentPath=singleResult.currentPath

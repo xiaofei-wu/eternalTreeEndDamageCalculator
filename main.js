@@ -20,13 +20,15 @@ class skill{
     }
 }
 class calc{
-    constructor(skillList,health,targetHealth,burstStatus=false){
+    constructor(skillList,health,targetHealth,burstStatus=false,maxSituations=1000){
+        //初始化参数
         this.skillList=skillList//技能列表
         this.health=health//血量
         this.targetHealth=targetHealth//目标血量
         this.burstStatus=burstStatus//调律爆裂状态
-        //初始化
-        this.result=[]//处理结果（取前三）
+        this.maxSituations=maxSituations//单线程最大分支数
+        //业务数据
+        this.result=[]//处理结果（取前二十）
     }
     //技能数据解耦
     initSkill(){
@@ -72,7 +74,7 @@ class calc{
                 //使用技能并更新状态
                 newSituations.push(this.useSkill(situation,skill))
                 if(callback){
-                    if(newSituations.length>=1000){
+                    if(newSituations.length>=this.maxSituations){
                         callback(newSituations)
                         newSituations=[]
                     }
