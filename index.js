@@ -57,7 +57,7 @@ var app = new Vue({
     },
     methods: {
         percentageFormat(val){
-            return `${this.count.complete}/${this.count.total}\t剩余：${this.count.total-this.count.complete}`
+            return `${this.count.complete}/${this.count.total} 剩余：${this.count.total-this.count.complete}`
         },
         format(val){
             return val.toString().replace(/\B(?=(\d{3})+$)/g,',')

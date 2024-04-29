@@ -56,7 +56,7 @@ function dealResults(subResults,id){
         count.calcing--
         startNewCalc()
     }
-    // postMessage({method:"percentageUpdate",data:count})
+    postMessage({method:"percentageUpdate",data:count})
     console.log("线程数："+count.complete+"/"+count.total)
     if(!workers.find((worker)=>{return !worker.complete})){
         console.log(results)
@@ -66,7 +66,7 @@ function dealResults(subResults,id){
 }
 function startNewCalc(){
     // console.log("当前运行线程数："+count.calcing)
-    postMessage({method:"percentageUpdate",data:count})
+    // postMessage({method:"percentageUpdate",data:count})
     if(count.calcing<10){
         let lastWorker=workers.findLast((worker)=>{return !worker.complete&&!worker.calcing})
         if(lastWorker){
