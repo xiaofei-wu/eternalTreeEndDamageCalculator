@@ -166,7 +166,7 @@ class calc{
         if(Number(situation.health)<Number(situation.targetHealth)) return;
         this.result.push(situation)
         this.result=this.result.sort((a,b)=>{return Number(a.health)-Number(b.health)})
-        this.result=this.result.slice(0,100)
+        this.result=this.result.slice(0,20)
     }
     getResult(){
         // console.log(this.result)
