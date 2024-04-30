@@ -183,7 +183,9 @@ var app = new Vue({
                         this.endTime=new Date().getTime()
                         this.$message({
                             message: `已计算完毕，耗时${(this.endTime-this.startTime)/1000}s`,
-                            type: 'success'
+                            type: 'success',
+                            showClose:true,
+                            duration:0,
                         });
                         console.log(`耗时：${(this.endTime-this.startTime)/1000}s`)
                         this.calcing=false
