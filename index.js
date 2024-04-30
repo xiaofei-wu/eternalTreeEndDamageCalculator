@@ -181,8 +181,9 @@ var app = new Vue({
                     case 'calcComplete':
                         this.currentScene.results = data.data
                         this.endTime=new Date().getTime()
-                        this.$message({
-                            message: `已计算完毕，耗时${(this.endTime-this.startTime)/1000}s`,
+                        this.$notify({
+                            title:"计算完成",
+                            message: `耗时${(this.endTime-this.startTime)/1000}s`,
                             type: 'success',
                             showClose:true,
                             duration:0,
@@ -201,10 +202,11 @@ var app = new Vue({
             if(this.count.total-this.count.complete>20&&!this.warningLock){
                 this.$message({
                     message: '当前计算复杂度较高，可能耗费较多时间，请耐心等待或简化计算条件',
-                    type: 'warning'
+                    type: 'warning',
+                    showClose:true,
                 });
                 this.warningLock=true
-                setTimeout(()=>{this.warningLock=false},10000)
+                setTimeout(()=>{this.warningLock=false},30000)
             }
         },
         viewResult(singleResult) {
