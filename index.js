@@ -162,6 +162,8 @@ var app = new Vue({
         startCalc() {
             window.localStorage.setItem('skillList', JSON.stringify(this.currentScene.skillList));
             window.localStorage.setItem('condition', JSON.stringify(this.currentScene.condition));
+            this.startTime=new Date().getTime()
+            this.calcing=true
             let calcSkillList=this.currentScene.skillList.filter(singleSkill=>{
                 return this.multipleSelection.findIndex(item=>item.id==singleSkill.id)>-1
             })
@@ -170,8 +172,6 @@ var app = new Vue({
             }else{
                 work.postMessage({ method: "startCalc", data: this.currentScene })
             }
-            this.startTime=new Date().getTime()
-            this.calcing=true
             work.onmessage = (e) => {
                 let data = e.data
                 switch (data.method) {
@@ -181,6 +181,10 @@ var app = new Vue({
                     case 'calcComplete':
                         this.currentScene.results = data.data
                         this.endTime=new Date().getTime()
+                        this.$message({
+                            message: `已计算完毕，耗时${(this.endTime-this.startTime)/1000}s`,
+                            type: 'success'
+                        });
                         console.log(`耗时：${(this.endTime-this.startTime)/1000}s`)
                         this.calcing=false
                         break;
