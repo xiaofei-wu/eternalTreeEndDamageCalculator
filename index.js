@@ -94,8 +94,7 @@ var app = new Vue({
                         return;
                     }
                     data.skillList=data.skillList.map(newSkill => {
-                        let formatSkill=new skill()
-                        return {...formatSkill,...newSkill}
+                        return {...new skill(),...newSkill}
                     });
                     this.currentScene={...this.currentScene,...data}
                     this.$message({
@@ -149,7 +148,13 @@ var app = new Vue({
                 if (valid) {
                     let index = this.currentScene.skillList.findIndex(item => { return item.id == this.formData.id })
                     if (index != -1) {
-                        this.currentScene.skillList[index] = this.formData
+                        // this.currentScene.skillList[index] = {...this.formData} //不知道为啥表单不刷新
+                        this.currentScene.skillList = this.currentScene.skillList.map(item=>{
+                            if(item.id == this.formData.id){
+                                return this.formData
+                            }
+                            return item
+                        })
                     } else {
                         this.currentScene.skillList.push(this.formData)
                     }
