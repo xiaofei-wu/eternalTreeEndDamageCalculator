@@ -38,7 +38,7 @@
                     </el-col>
                 </el-row> -->
                 <el-row>
-                    <el-table ref="skillList" :data="currentScene.skillList" row-key="id" current-row-key="Math.random()" highlight-selection-row @selection-change="handleSelectionChange" border style="width: 100%" height="90vh">
+                    <el-table ref="skillList" :data="currentScene.skillList" row-key="id" highlight-selection-row @selection-change="handleSelectionChange" border style="width: 100%" height="90vh">
                         <el-table-column key type="selection" width="40" reserve-selection></el-table-column>
                         <el-table-column prop="name" label="技能名称" width="160" show-overflow-tooltip>
                             <template slot-scope="scope">
