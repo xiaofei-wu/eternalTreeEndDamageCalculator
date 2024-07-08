@@ -141,6 +141,10 @@ class calc{
                     newSituation.currentPath[newSituation.currentPath.length-1].autoDamage=newSituation.currentPath[newSituation.currentPath.length-1].autoDamage+newSituation.burstStatus?autoSkill.damageAfterBurst:autoSkill.damage
                 }
             })
+            newSituation.skillList.filter(burstSkill=>{ return burstSkill.type==0}).forEach(burstSkill=>{
+                burstSkill.count+=0.1
+                if(burstSkill.count>=burstSkill.maxCount) burstSkill.count=burstSkill.maxCount
+            })
         }
         if(skill.type==2){
             newSituation.skillList.filter(autoSkill=>{ return autoSkill.type==5}).forEach(autoSkill=>{
