@@ -142,13 +142,13 @@ class calc{
                 }
             })
             newSituation.skillList.filter(burstSkill=>{ return burstSkill.type==0}).forEach(burstSkill=>{
-                burstSkill.count+=0.1
+                burstSkill.count=Number(burstSkill.count)+0.1
                 console.log("——————")
                 console.log(burstSkill.maxCount)
                 console.log(burstSkill.count)
                 console.log(burstSkill.count<1)
                 console.log(burstSkill.count>1)
-                console.log(burstSkill.count=1)
+                console.log(burstSkill.count==1)
                 console.log(burstSkill.count>=burstSkill.maxCount)
                 console.log("——————")
                 if(burstSkill.count>=burstSkill.maxCount) burstSkill.count=burstSkill.maxCount
