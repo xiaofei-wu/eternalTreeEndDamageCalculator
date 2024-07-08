@@ -130,7 +130,7 @@ class calc{
                 }
             })
             newSituation.skillList.filter(burstSkill=>{ return burstSkill.type==0}).forEach(burstSkill=>{
-                burstSkill.count=(Number(burstSkill.count)+0.1).toFixed(1)
+                burstSkill.count=(Number(burstSkill.count)+0.1).toFixed(4)
                 if(burstSkill.count>=burstSkill.maxCount) burstSkill.count=burstSkill.maxCount
             })
         }
