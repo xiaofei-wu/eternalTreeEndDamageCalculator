@@ -72,7 +72,11 @@ class calc{
                 //判断技能是否可以使用
                 if(!this.canIuse(situation,skill,index)) return;
                 //使用技能并更新状态
-                newSituations.push(this.useSkill(situation,skill))
+                let newSituation=this.useSkill(situation,skill)
+                //判断伤害是否超出
+                if(Number(newSituation.health)<Number(newSituation.targetHealth)) return;
+                newSituations.push(newSituation)
+                //超出运行上界抛出开新线程
                 if(callback){
                     if(newSituations.length>=this.maxSituations){
                         callback(newSituations)
@@ -90,7 +94,7 @@ class calc{
     //判断技能是否可以使用*未增加自动炮临界判断
     canIuse(situation,skill,index){
         //技能不可用或可用次数不足
-        if(!skill.state||skill.count<1) return false;
+        if(!skill.state||Number(skill.count)<1) return false;
         //技能总可用次数不足
         if(situation.currentPath.filter(item=>item.id==skill.id).length>=skill.maxTotalCount) return false;
         //技能伤害过高
@@ -107,9 +111,9 @@ class calc{
     useSkill(situation,skill){
         //深拷贝
         let newSituation=JSON.parse(JSON.stringify(situation))
-        //增加其他技能次数
+        let currentSkill=newSituation.skillList.find((item)=>item.id==skill.id)
         //可用次数-1
-        newSituation.skillList.find((item)=>item.id==skill.id).count--
+        currentSkill.count--
         //造成伤害
         if(newSituation.burstStatus){
             newSituation.health-=skill.damageAfterBurst
@@ -117,14 +121,18 @@ class calc{
             newSituation.health-=skill.damage
         }
         //调律爆裂
-        if(skill.type==0){newSituation.burstStatus=true}
+        if(skill.type==0){
+            newSituation.burstStatus=true;
+            //本回合禁用
+            currentSkill.state=false
+        }
         //记录使用
         // newSituation.currentPath.push({id:skill.id,name:skill.name,damage:newSituation.burstStatus?skill.damageAfterBurst:skill.damage,autoDamage:0,type:skill.type,remainHealth:newSituation.health})
         newSituation.currentPath.push({arrayIndex:skill.arrayIndex,id:skill.id,damage:newSituation.burstStatus?skill.damageAfterBurst:skill.damage,autoSkillIds:[],autoDamage:0,type:skill.type,remainHealth:newSituation.health})
         //newSituation.currentPath.push({id:skill.id,name:skill.name,type:skill.type})
         //使用自动炮*需考虑自动炮伤害超标,0调律爆裂，1调律，2共鸣，3虚数体，4自动炮（调律），5自动炮（共鸣）
-        if(skill.type==1){
-            newSituation.skillList.filter(autoSkill=>{ return autoSkill.type==4}).forEach(autoSkill=>{
+        newSituation.skillList.forEach(autoSkill=>{
+            if(skill.type==1&&autoSkill.type==4){
                 autoSkill.autoDamageCount++
                 if(Number(autoSkill.autoDamageCount)>=Number(autoSkill.autoDamageTriggerCount)){
                     //触发自动炮
@@ -140,14 +148,7 @@ class calc{
                     newSituation.currentPath[newSituation.currentPath.length-1].autoSkillIds=newSituation.currentPath[newSituation.currentPath.length-1].id
                     newSituation.currentPath[newSituation.currentPath.length-1].autoDamage=newSituation.currentPath[newSituation.currentPath.length-1].autoDamage+newSituation.burstStatus?autoSkill.damageAfterBurst:autoSkill.damage
                 }
-            })
-            newSituation.skillList.filter(burstSkill=>{ return burstSkill.type==0}).forEach(burstSkill=>{
-                burstSkill.count=(Number(burstSkill.count)+0.1).toFixed(4)
-                if(burstSkill.count>=burstSkill.maxCount) burstSkill.count=burstSkill.maxCount
-            })
-        }
-        if(skill.type==2){
-            newSituation.skillList.filter(autoSkill=>{ return autoSkill.type==5}).forEach(autoSkill=>{
+            }else if(skill.type==2&&autoSkill.type==5){
                 autoSkill.autoDamageCount++
                 if(Number(autoSkill.autoDamageCount)>=Number(autoSkill.autoDamageTriggerCount)){
                     //触发自动炮
@@ -163,14 +164,61 @@ class calc{
                     newSituation.currentPath[newSituation.currentPath.length-1].autoSkillIds=newSituation.currentPath[newSituation.currentPath.length-1].id
                     newSituation.currentPath[newSituation.currentPath.length-1].autoDamage=newSituation.currentPath[newSituation.currentPath.length-1].autoDamage+newSituation.burstStatus?autoSkill.damageAfterBurst:autoSkill.damage
                 }
-            })
-        }
+            }else if(skill.type==1&&autoSkill.type==0){
+                autoSkill.count=(Number(autoSkill.count)+0.1).toFixed(4)
+                if(autoSkill.count>=autoSkill.maxCount) autoSkill.count=autoSkill.maxCount
+            }
+        })
+        //已重写，减少filter使用
+        // if(skill.type==1){
+        //     newSituation.skillList.filter(autoSkill=>{ return autoSkill.type==4}).forEach(autoSkill=>{
+        //         autoSkill.autoDamageCount++
+        //         if(Number(autoSkill.autoDamageCount)>=Number(autoSkill.autoDamageTriggerCount)){
+        //             //触发自动炮
+        //             autoSkill.autoDamageCount=0;
+        //             if(newSituation.burstStatus){
+        //                 newSituation.health-=autoSkill.damageAfterBurst
+        //             }else{
+        //                 newSituation.health-=autoSkill.damage
+        //             }
+        //             //newSituation.currentPath.push({id:autoSkill.id,name:autoSkill.name,damage:newSituation.burstStatus?autoSkill.damageAfterBurst:autoSkill.damage,type:autoSkill.type,remainHealth:newSituation.health})
+        //             //不记录自动炮仅改写血量
+        //             newSituation.currentPath[newSituation.currentPath.length-1].remainHealth=newSituation.health
+        //             newSituation.currentPath[newSituation.currentPath.length-1].autoSkillIds=newSituation.currentPath[newSituation.currentPath.length-1].id
+        //             newSituation.currentPath[newSituation.currentPath.length-1].autoDamage=newSituation.currentPath[newSituation.currentPath.length-1].autoDamage+newSituation.burstStatus?autoSkill.damageAfterBurst:autoSkill.damage
+        //         }
+        //     })
+        //     newSituation.skillList.filter(burstSkill=>{ return burstSkill.type==0}).forEach(burstSkill=>{
+        //         burstSkill.count=(Number(burstSkill.count)+0.1).toFixed(4)
+        //         if(burstSkill.count>=burstSkill.maxCount) burstSkill.count=burstSkill.maxCount
+        //     })
+        // }
+        // if(skill.type==2){
+        //     newSituation.skillList.filter(autoSkill=>{ return autoSkill.type==5}).forEach(autoSkill=>{
+        //         autoSkill.autoDamageCount++
+        //         if(Number(autoSkill.autoDamageCount)>=Number(autoSkill.autoDamageTriggerCount)){
+        //             //触发自动炮
+        //             autoSkill.autoDamageCount=0;
+        //             if(newSituation.burstStatus){
+        //                 newSituation.health-=autoSkill.damageAfterBurst
+        //             }else{
+        //                 newSituation.health-=autoSkill.damage
+        //             }
+        //             //newSituation.currentPath.push({id:autoSkill.id,name:autoSkill.name,damage:newSituation.burstStatus?autoSkill.damageAfterBurst:autoSkill.damage,type:autoSkill.type,remainHealth:newSituation.health})
+        //             //不记录自动炮仅改写血量
+        //             newSituation.currentPath[newSituation.currentPath.length-1].remainHealth=newSituation.health
+        //             newSituation.currentPath[newSituation.currentPath.length-1].autoSkillIds=newSituation.currentPath[newSituation.currentPath.length-1].id
+        //             newSituation.currentPath[newSituation.currentPath.length-1].autoDamage=newSituation.currentPath[newSituation.currentPath.length-1].autoDamage+newSituation.burstStatus?autoSkill.damageAfterBurst:autoSkill.damage
+        //         }
+        //     })
+        // }
+        //后处理
         return newSituation
     }
     //归档结果并保留前一百项
     resultDeal(situation){
         //结果筛选
-        if(Number(situation.health)<Number(situation.targetHealth)) return;
+        // if(Number(situation.health)<Number(situation.targetHealth)) return;
         this.result.push(situation)
         this.result=this.result.sort((a,b)=>{return Number(a.health)-Number(b.health)})
         this.result=this.result.slice(0,20)
