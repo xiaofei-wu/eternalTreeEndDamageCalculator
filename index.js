@@ -54,6 +54,16 @@ var app = new Vue({
         if (window.localStorage.getItem('condition')) {
             this.currentScene.condition = JSON.parse(window.localStorage.getItem('condition'))
         }
+        this.$nextTick(()=>{
+            const el= this.$el.querySelector('.Sortable tbody')
+            const _this = this;
+            Sortable.create(el, {
+            onEnd({ newIndex, oldIndex }) {
+                const currRow = _this.currentScene.skillList.splice(oldIndex, 1)[0];
+                _this.currentScene.skillList.splice(newIndex, 0, currRow);
+            }
+            });
+        })
     },
     methods: {
         percentageFormat(val){
