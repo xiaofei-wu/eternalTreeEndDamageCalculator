@@ -113,7 +113,11 @@ class calc{
         let newSituation=JSON.parse(JSON.stringify(situation))
         let currentSkill=newSituation.skillList.find((item)=>item.id==skill.id)
         //可用次数-1
-        currentSkill.count--
+        if(skill.type==0){
+            newSituation.skillList.filter(burstSkill=>{ return burstSkill.type==0}).forEach(burstSkill=>{burstSkill.count--})
+        }else{
+            currentSkill.count--
+        }
         //造成伤害
         if(newSituation.burstStatus){
             newSituation.health-=skill.damageAfterBurst
@@ -129,7 +133,7 @@ class calc{
         //过T//消除调律爆裂状态&解禁
         if(skill.type==6){
             newSituation.burstStatus=false;
-            newSituation.filter(burstSkill=>{ return burstSkill.type==0}).forEach(burstSkill=>{burstSkill.state=true})
+            newSituation.skillList.filter(burstSkill=>{ return burstSkill.type==0}).forEach(burstSkill=>{burstSkill.state=true})
         }
         //记录使用
         // newSituation.currentPath.push({id:skill.id,name:skill.name,damage:newSituation.burstStatus?skill.damageAfterBurst:skill.damage,autoDamage:0,type:skill.type,remainHealth:newSituation.health})
@@ -225,6 +229,10 @@ class calc{
                     dealSkill.count=(Number(dealSkill.count)+Number(fixSkill.count)).toFixed(4)
                     if(dealSkill.count>=dealSkill.maxCount) dealSkill.count=dealSkill.maxCount
                     if(dealSkill.count<0) dealSkill.count=0
+                    if(dealSkill.count>=1){
+                        let dealIndex=newSituation.skillList.findIndex((item)=>item.id==fixSkill.skillId)
+                        newSituation.skillList.push(newSituation.skillList.splice(dealIndex, 1))
+                    }
                 }
             })
         }
