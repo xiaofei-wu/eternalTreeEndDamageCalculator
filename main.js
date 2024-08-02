@@ -231,7 +231,7 @@ class calc{
                     if(dealSkill.count<0) dealSkill.count=0
                     if(dealSkill.count>=1){
                         let dealIndex=newSituation.skillList.findIndex((item)=>item.id==fixSkill.skillId)
-                        newSituation.skillList.push(newSituation.skillList.splice(dealIndex, 1))
+                        newSituation.skillList.push(newSituation.skillList.splice(dealIndex, 1)[0])
                     }
                 }
             })
