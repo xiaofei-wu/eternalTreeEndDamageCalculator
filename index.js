@@ -4,7 +4,7 @@ var app = new Vue({
     el: '#app',
     data: () => {
         return {
-            skillTypes: ["调律爆裂","调律", "共鸣", "虚数体", "自动炮（调律）", "自动炮（共鸣）"],
+            skillTypes: ["调律爆裂","调律", "共鸣", "虚数体", "自动炮（调律）", "自动炮（共鸣）","过T"],
             scenes: [],
             currentScene: {
                 skillList: [],
@@ -153,10 +153,17 @@ var app = new Vue({
             this.formDisabled = false
             this.dialogVisible = true
         },
+        addCountFix(){
+            this.formData.countFix.push({skillId:null,count:null})
+        },
+        delCountFix(index){
+            this.formData.countFix.splice(index, 1);
+        },
         submitForm() {
             this.$refs["form"].validate((valid) => {
                 if (valid) {
                     let index = this.currentScene.skillList.findIndex(item => { return item.id == this.formData.id })
+                    this.formData.countFix=this.formData.countFix.filter(skill=>{return skill.skillId&&skill.count})
                     if (index != -1) {
                         // this.currentScene.skillList[index] = {...this.formData} //不知道为啥表单不刷新
                         this.currentScene.skillList = this.currentScene.skillList.map(item=>{
@@ -168,6 +175,7 @@ var app = new Vue({
                     } else {
                         this.currentScene.skillList.push(this.formData)
                     }
+                    console.log(this.formData)
                     this.dialogVisible = false
                 } else {
                     return false;

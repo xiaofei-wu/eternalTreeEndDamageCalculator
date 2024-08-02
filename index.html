@@ -104,7 +104,7 @@
                 <el-form-item label="标记" prop="color">
                     <el-color-picker v-model="formData.color" show-alpha :predefine="predefineColors"></el-color-picker>
                 </el-form-item>
-                <template v-if="formData.type<4">
+                <template v-if="formData.type!=4||formData.type!=5">
                     <el-form-item label="技能可用次数" prop="count">
                         <el-input v-model="formData.count" type="number"></el-input>
                     </el-form-item>
@@ -133,6 +133,16 @@
                         <el-input v-model="formData.autoDamageTriggerCount" type="number"></el-input>
                     </el-form-item>
                 </template>
+                <el-form-item label="增加其他技能计数">
+                    <el-row style="padding-bottom: 10px;" v-for="(skill,index) in formData.countFix">
+                        <el-select v-model="skill.skillId" placeholder="请选择">
+                            <el-option v-for="item in currentScene.skillList" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                        </el-select>
+                        <el-input v-model="skill.count" type="number" style="width: 40%"></el-input>
+                        <i class="el-icon-remove" @click="delCountFix(index)" style="font-size: 25px;vertical-align: middle;color:red" ></i>
+                    </el-row>
+                    <i class="el-icon-circle-plus" @click="addCountFix()" style="font-size: 25px;vertical-align: middle;color:green" ></i>
+                </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取消</el-button>

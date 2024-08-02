@@ -68,7 +68,7 @@ class calc{
                 //排除自动炮
                 if(skill.type==4||skill.type==5) return;
                 //不计算当前排序在上次使用的技能前的技能
-                if(lastSkill&&lastSkill.arrayIndex>index&&(!lastSkill||(lastSkill.type!=0&&lastSkill.type!=4&&lastSkill.type!=5))&&skill.type!=0) return;
+                if(lastSkill&&lastSkill.arrayIndex>index&&(!lastSkill||(lastSkill.type!=0&&lastSkill.type!=4&&lastSkill.type!=5))&&skill.type!=0&&skill.type!=6) return;
                 //判断技能是否可以使用
                 if(!this.canIuse(situation,skill,index)) return;
                 //使用技能并更新状态
@@ -125,6 +125,11 @@ class calc{
             newSituation.burstStatus=true;
             //本回合禁用
             currentSkill.state=false
+        }
+        //过T//消除调律爆裂状态&解禁
+        if(skill.type==6){
+            newSituation.burstStatus=false;
+            newSituation.filter(burstSkill=>{ return burstSkill.type==0}).forEach(burstSkill=>{burstSkill.state=true})
         }
         //记录使用
         // newSituation.currentPath.push({id:skill.id,name:skill.name,damage:newSituation.burstStatus?skill.damageAfterBurst:skill.damage,autoDamage:0,type:skill.type,remainHealth:newSituation.health})
@@ -213,6 +218,16 @@ class calc{
         //     })
         // }
         //后处理
+        if(skill.countFix&&skill.countFix.length>0){
+            skill.countFix.forEach(fixSkill=>{
+                let dealSkill=newSituation.skillList.find((item)=>item.id==fixSkill.skillId)
+                if(dealSkill){
+                    dealSkill.count=(Number(dealSkill.count)+Number(fixSkill.count)).toFixed(4)
+                    if(dealSkill.count>=dealSkill.maxCount) dealSkill.count=dealSkill.maxCount
+                    if(dealSkill.count<0) dealSkill.count=0
+                }
+            })
+        }
         return newSituation
     }
     //归档结果并保留前一百项
