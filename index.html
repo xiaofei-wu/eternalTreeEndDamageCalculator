@@ -46,7 +46,7 @@
                             </template>
                         </el-table-column>
                         <el-table-column prop="damage" :formatter="numberFormat" label="技能伤害" width="120"></el-table-column>
-                        <el-table-column prop="damageAfterBurst" :formatter="numberFormat" label="调律爆率后伤害" width="120"></el-table-column>
+                        <el-table-column prop="damageAfterBurst" :formatter="numberFormat" label="调律爆裂后伤害" width="120"></el-table-column>
                         <el-table-column prop="damageDap" label="伤害差值" width="120">
                             <template slot-scope="scope">
                                 {{format(scope.row.damageAfterBurst-scope.row.damage)}}
