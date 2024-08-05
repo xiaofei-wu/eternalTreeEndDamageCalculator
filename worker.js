@@ -5,6 +5,9 @@ onmessage = (e) => {
         case 'startCalc':
             startCalc(data.data)
             break;
+        case 'getResult':
+            getResult()
+            break;
         default:
             postMessage('Unknown command: ' + data.method);
     }
@@ -63,6 +66,9 @@ function dealResults(subResults,id){
         postMessage({method:"calcComplete",data:results})
         workers=[]
     }
+}
+function getResult(){
+    postMessage({method:"setResult",data:results})
 }
 function startNewCalc(){
     // console.log("当前运行线程数："+count.calcing)

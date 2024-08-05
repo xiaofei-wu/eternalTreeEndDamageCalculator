@@ -195,6 +195,7 @@ var app = new Vue({
             }else{
                 work.postMessage({ method: "startCalc", data: this.currentScene })
             }
+            this.currentScene.results = []
             work.onmessage = (e) => {
                 let data = e.data
                 switch (data.method) {
@@ -214,10 +215,16 @@ var app = new Vue({
                         console.log(`耗时：${(this.endTime-this.startTime)/1000}s`)
                         this.calcing=false
                         break;
+                    case 'setResult':
+                        this.currentScene.results = data.data
+                        break;
                     default:
                         console.log(e);
                 }
             }
+        },
+        getResult(){
+            work.postMessage({ method: "getResult", data: '' })
         },
         percentageUpdate(count){
             // this.percentage = Number((Number(count.complete)/Number(count.total)*100).toFixed(2))

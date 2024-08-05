@@ -23,7 +23,7 @@
                     </el-col>
                 </el-row>
             </el-col>
-            <el-col :span="2" style="text-align: center;"><el-button type="primary" @click="startCalc" :disabled="calcing">></el-button></el-col>
+            <el-col :span="2" style="text-align: center;"><el-button type="primary" @click="startCalc" :disabled="calcing" icon="el-icon-refresh-right"></el-button><el-button type="primary" @click="getResult" icon="el-icon-view"></el-button></el-col>
             <el-col :span="11"><el-progress :text-inside="true" :stroke-width="26" :percentage="percentage" :format="percentageFormat"></el-progress></el-col>
         </el-row>
         <el-row>
@@ -69,7 +69,7 @@
             </el-col>
             <el-col :span="11" :offset="2">
                 <el-row>
-                    <el-table ref="results" :data="currentScene.results" border style="width: 100%" v-loading="calcing" height="90vh">
+                    <el-table ref="results" :data="currentScene.results" border style="width: 100%" height="90vh">
                         <el-table-column prop="health" :formatter="numberFormat" label="剩余血量"></el-table-column>
                         <el-table-column prop="healthGap" label="据目标值">
                             <template slot-scope="scope">
