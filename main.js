@@ -68,7 +68,7 @@ class calc{
                 //排除自动炮
                 if(skill.type==4||skill.type==5) return;
                 //不计算当前排序在上次使用的技能前的技能
-                if(lastSkill&&lastSkill.arrayIndex>index&&(!lastSkill||(lastSkill.type!=0&&lastSkill.type!=4&&lastSkill.type!=5))&&skill.type!=0&&skill.type!=6) return;
+                if(lastSkill&&lastSkill.arrayIndex>index&&(!lastSkill||(lastSkill.type!=0&&lastSkill.type!=4&&lastSkill.type!=5&&lastSkill.type!=6))&&skill.type!=0&&skill.type!=6) return;
                 //判断技能是否可以使用
                 if(!this.canIuse(situation,skill,index)) return;
                 //使用技能并更新状态
